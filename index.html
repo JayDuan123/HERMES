@@ -168,7 +168,6 @@ svg.chart .grid{stroke:var(--line);stroke-dasharray:2 3}
 .kv{display:flex;justify-content:space-between;font-size:13px;color:var(--fg-2)}
 .mono{font-family:"JetBrains Mono",ui-monospace,monospace}
 details.tbl summary{cursor:pointer;font-size:14px;color:var(--accent-ink);margin:6px 0}
-@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}.brow,.brow .bf,.brow .bg{transition:none}.mon .dot{animation:none}}
 </style>
 </head>
 <body>
@@ -415,7 +414,7 @@ document.getElementById('copybtn').addEventListener('click',async e=>{
 </script>
 <script>
 (function(){
-const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const RM=false;   // animations always play (user request), regardless of the OS reduced-motion setting
 const $=s=>document.querySelector(s);
 const FAM={proprietary:'var(--c-prop)',general:'var(--c-gen)',medical:'var(--c-med)',pathology:'var(--c-path)'};
 const colorOf=(name,fam)=>name==='HERMES (RL)'||name==='HERMES'?'var(--c-ours)':name==='HERMES (SFT)'?'var(--c-ours2)':

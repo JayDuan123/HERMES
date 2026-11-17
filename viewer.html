@@ -124,7 +124,7 @@ kbd{font:12px/1 ui-monospace,Menlo,monospace;border:1px solid var(--line);border
 const BASE = "static/viewer/";
 const TASKS = [["density","Density"],["regions","Regions"],["fraction","Ki67 fraction"],["source","Ki67 source"]];
 const COL = {in:"#ffe23b", out:"#3be8ff", red:"#ffffff", stated:"#d9b8ff", hbox:"#ffffff", tbox:"#2ee66b", gbox:"#ff8fb1", kiall:"#ffffff"};
-const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const REDUCED = false;   // animations always play (user request), regardless of the OS reduced-motion setting
 let DATA, F = null, task = "density", step = -1, playing = false, timer = null, imgs = {};
 const show = {mask:true, cells:true, hbox:true, tbox:true, gbox:false};
 // layer state: alpha animates 0->1 when a step switches the layer on; t0 drives the staggered ring pop-in
