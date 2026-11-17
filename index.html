@@ -93,6 +93,82 @@ footer a{color:var(--muted)}
   .cards,.two{grid-template-columns:minmax(0,1fr)}
   .tasks,.stats{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+/* ---------- dynamic page (CADENCE-style) ---------- */
+:root{--c-prop:#8b8598;--c-gen:#2a78d6;--c-med:#16946f;--c-path:#d9662b;--c-ours:var(--accent);--c-ours2:#a88fd6;--c-base:#b9b3c6;
+  --track:#efecf4;--monbg:#0f0d14;--monfg:#e9e5f2;--monmut:#9a93ad;--ok:#1f7a55;--bad:#b4363a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--c-prop:#a49fb0;--c-gen:#5f9de6;--c-med:#3fbf96;--c-path:#ee8a52;
+  --c-ours2:#8c73bd;--c-base:#5d576b;--track:#25212d;--ok:#5cc79a;--bad:#ec7a7d}}
+:root[data-theme="dark"]{--c-prop:#a49fb0;--c-gen:#5f9de6;--c-med:#3fbf96;--c-path:#ee8a52;--c-ours2:#8c73bd;--c-base:#5d576b;--track:#25212d;--ok:#5cc79a;--bad:#ec7a7d}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+.reveal.in{opacity:1;transform:none}
+/* hero monitor */
+.mon{background:var(--monbg);color:var(--monfg);border-radius:12px;padding:14px;margin-top:26px;display:grid;
+  grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:stretch;text-align:left}
+.mon .imgs{display:flex;gap:8px}
+.mon .pane{position:relative;width:min(210px,40vw);aspect-ratio:1;border-radius:6px;overflow:hidden;background:#000}
+.mon canvas{width:100%;height:100%;display:block}
+.mon .tag{position:absolute;left:6px;top:5px;font:600 11px Inter,sans-serif;letter-spacing:.06em;color:#fff;
+  background:rgba(0,0,0,.45);border-radius:4px;padding:1px 6px}
+.mon .side{display:flex;flex-direction:column;min-width:0}
+.mon .q{font-size:13px;color:var(--monmut);margin-bottom:8px;line-height:1.45}
+.mon .q b{color:var(--monfg);font-weight:600}
+.mon .stepl{display:flex;flex-direction:column;gap:5px;flex:1}
+.mon .st{font:12.5px/1.45 "JetBrains Mono",ui-monospace,monospace;color:#5d5770;transition:color .4s}
+.mon .st.on{color:var(--monfg)}
+.mon .st .mtag{display:inline-block;min-width:34px;font-weight:600}
+.mon .st .mtag.he{color:#e58fc0}.mon .st .mtag.mif{color:#ff7a6b}
+.mon .chip{display:inline-block;margin-left:6px;font-size:11.5px;border-radius:4px;padding:0 5px;background:#22302a;color:#7fe0b0}
+.mon .foot{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--monmut);margin-top:10px;flex-wrap:wrap}
+.mon .foot a{color:#c7aef5;text-decoration:none}
+.mon .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#ff5a6e;margin-right:6px;animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+@media (max-width:760px){.mon{grid-template-columns:minmax(0,1fr)}.mon .imgs{justify-content:center}.mon .pane{width:min(46vw,210px)}}
+/* widgets */
+.widget{border:1px solid var(--line);border-radius:12px;padding:16px 18px;background:var(--bg);margin:18px 0}
+.widget .wh{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.widget .wt{font-size:13px;font-weight:600;color:var(--fg-2);letter-spacing:.02em}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;background:var(--bg-soft);border-radius:99px;padding:3px}
+.seg button{font:500 13px Inter,sans-serif;border:0;background:transparent;color:var(--fg-2);border-radius:99px;padding:4px 11px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--bg)}
+.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.wcap{font-size:13.5px;color:var(--fg-2);margin-top:10px;line-height:1.5}
+.wcap b{color:var(--fg)}
+.wcap a{color:var(--accent-ink)}
+/* bar list */
+.bars{position:relative}
+.brow{position:absolute;left:0;right:0;height:26px;display:grid;grid-template-columns:150px minmax(0,1fr) 52px;gap:10px;align-items:center;
+  transition:top .6s cubic-bezier(.2,.7,.2,1),opacity .4s}
+.brow .bn{font-size:13px;color:var(--fg-2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:right}
+.brow.ours .bn{color:var(--accent-ink);font-weight:600}
+.brow .bt{position:relative;height:14px;background:var(--track);border-radius:0 4px 4px 0}
+.brow .bf{position:absolute;left:0;top:0;bottom:0;border-radius:0 4px 4px 0;transition:width .8s cubic-bezier(.2,.7,.2,1),background .4s}
+.brow .bg{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--fg-2);opacity:.55;transition:left .8s cubic-bezier(.2,.7,.2,1)}
+.brow .bv{font-size:13px;font-variant-numeric:tabular-nums;color:var(--fg);text-align:left}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12.5px;color:var(--fg-2);margin-top:8px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+@media (max-width:560px){.brow{grid-template-columns:104px minmax(0,1fr) 44px;gap:6px}.brow .bn{font-size:12px}}
+.wgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+@media (max-width:760px){.wgrid{grid-template-columns:minmax(0,1fr)}}
+svg.chart{width:100%;height:auto;display:block;overflow:visible}
+svg.chart text{font:12px Inter,sans-serif;fill:var(--fg-2)}
+svg.chart .ax{stroke:var(--line)}
+svg.chart .grid{stroke:var(--line);stroke-dasharray:2 3}
+.tipbox{position:absolute;pointer-events:none;background:var(--fg);color:var(--bg);font-size:12px;border-radius:6px;padding:4px 8px;white-space:nowrap;
+  transform:translate(-50%,-120%);opacity:0;transition:opacity .15s}
+/* reasoning edit */
+.trace{font:13.5px/1.6 "JetBrains Mono",ui-monospace,monospace;background:var(--code);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.trace .ln{display:grid;grid-template-columns:22px 44px minmax(0,1fr);gap:6px}
+.trace .n{color:var(--muted)} .trace .m{font-weight:600} .trace .m.he{color:#b0457f} .trace .m.mif{color:#c73a2c}
+.trace .ed{background:var(--accent-soft);color:var(--accent-ink);border-radius:4px;padding:0 4px;font-weight:600}
+.trace .ans{border-top:1px dashed var(--line);margin-top:6px;padding-top:6px;font-weight:600}
+.flash{animation:flash .7s}
+@keyframes flash{0%{background:var(--accent-soft)}100%{background:transparent}}
+.slider{width:100%;accent-color:var(--accent);margin:10px 0 2px}
+.kv{display:flex;justify-content:space-between;font-size:13px;color:var(--fg-2)}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+details.tbl summary{cursor:pointer;font-size:14px;color:var(--accent-ink);margin:6px 0}
+@media (prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}.brow,.brow .bf,.brow .bg{transition:none}.mon .dot{animation:none}}
 </style>
 </head>
 <body>
@@ -113,6 +189,18 @@ footer a{color:var(--muted)}
     <a class="btn soon" aria-disabled="true"><svg viewBox="0 0 24 24"><path d="M4 5c0-1.7 3.6-3 8-3s8 1.3 8 3v14c0 1.7-3.6 3-8 3s-8-1.3-8-3V5zm2 2.4V11c0 .6 2.4 1.8 6 1.8s6-1.2 6-1.8V7.4C16.5 8.1 14.4 8.5 12 8.5S7.5 8.1 6 7.4zm0 6V17c0 .6 2.4 1.8 6 1.8s6-1.2 6-1.8v-3.6c-1.5.7-3.6 1.1-6 1.1s-4.5-.4-6-1.1z"/></svg>Benchmark <small>soon</small></a>
   </div>
 </header>
+
+<div class="mon" id="mon" role="img" aria-label="HERMES reasoning on held-out fields, played step by step on the H&amp;E and mIF images">
+  <div class="imgs">
+    <div class="pane"><canvas id="monhe" width="420" height="420"></canvas><span class="tag">H&amp;E</span></div>
+    <div class="pane"><canvas id="monmif" width="420" height="420"></canvas><span class="tag">mIF</span></div>
+  </div>
+  <div class="side">
+    <div class="q" id="monq">Loading held-out fields…</div>
+    <div class="stepl" id="monsteps"></div>
+    <div class="foot"><span id="monst"></span><a id="monlink" href="viewer.html">Open in viewer →</a></div>
+  </div>
+</div>
 
 <figure class="teaser">
   <img src="static/teaser.jpg" alt="Bar chart: HERMES (4B) compared with leading MLLMs on held-out Orion patients across Density, Regions, Ki67 and CD8 grade agreement">
@@ -151,6 +239,14 @@ footer a{color:var(--muted)}
     <li><b>Supervised fine-tuning.</b> Qwen3.5-4B is fine-tuned with LoRA on reasoning traces built from the cell-level measurements.</li>
     <li><b>GRPO with a process reward.</b> Besides format and answer rewards, a process reward checks every stated quantity against the cell-level truth, under a tolerance that tightens during training.</li>
   </ol>
+  <figure class="widget" id="rw">
+    <div class="wh"><span class="wt">Process reward for one stated quantity</span><div class="seg" id="rwq"></div></div>
+    <div class="wh"><div class="seg" id="rws"></div><span class="mono" id="rwr" style="font-size:13.5px;color:var(--accent-ink)"></span></div>
+    <svg class="chart" id="rwsvg" viewBox="0 0 640 200" role="img" aria-label="Process reward as a function of the stated value, for three tolerance stages"></svg>
+    <input type="range" class="slider" id="rwx" min="0" max="206" value="98" aria-label="Stated value">
+    <div class="kv"><span id="rwl"></span><span id="rwtau" class="mono"></span></div>
+    <figcaption class="wcap">Each stated quantity earns <span class="mono">max(0, 1 − |q̂ − q| / w)</span> against its cell-level truth <span class="mono">q</span>, and a quantity that is not stated earns 0. Area shares use <span class="mono">w</span> = 30 percentage points; counts use a tolerance <span class="mono">τ(q)</span> that tightens over three stages of training, so the same stated count earns less as training goes on. Drag the stated value.</figcaption>
+  </figure>
   <h3>Four tasks tied to clinical readouts</h3>
   </div>
   <div class="tasks">
@@ -177,6 +273,14 @@ footer a{color:var(--muted)}
 
   <div class="narrow"><h3>Accuracy on Orion and two external cohorts</h3>
   <p>Held-out Orion patients (colorectal cancer), the Schürch cohort (colorectal cancer imaged with CODEX) and a head and neck squamous cell carcinoma (HNSCC) cohort, a cancer type absent from training. All models get the same prompts and images; nothing is fine-tuned on the external cohorts.</p></div>
+  <figure class="widget" id="resw">
+    <div class="wh"><div class="seg" id="resc"></div></div>
+    <div class="wh"><div class="seg" id="resm"></div></div>
+    <div class="bars" id="resbars"></div>
+    <div class="legend"><span><i style="background:var(--c-prop)"></i>Proprietary</span><span><i style="background:var(--c-gen)"></i>General</span><span><i style="background:var(--c-med)"></i>Medical</span><span><i style="background:var(--c-path)"></i>Pathology</span><span><i style="background:var(--c-base)"></i>Qwen3.5-4B (base)</span><span><i style="background:var(--c-ours2)"></i>HERMES (SFT)</span><span><i style="background:var(--c-ours)"></i>HERMES (RL)</span></div>
+    <figcaption class="wcap" id="rescap"></figcaption>
+  </figure>
+  <details class="tbl"><summary>Show the full table</summary>
   <div class="tbl"><table>
     <thead><tr><th>Model</th><th>Density</th><th>Regions</th><th>Ki67 source</th><th>Ki67 fraction</th><th>Orion avg.</th><th>Schürch avg.</th><th>HNSCC avg.</th></tr></thead>
     <tbody>
@@ -201,32 +305,77 @@ footer a{color:var(--muted)}
       <tr class="ours"><td>HERMES (RL)</td><td class="best">76.0</td><td class="best">81.3</td><td class="best">94.4</td><td class="best">86.4</td><td class="best">84.5</td><td class="best">76.4</td><td class="best">76.7</td></tr>
     </tbody>
   </table></div>
-  <p class="note narrow">Accuracy (%). Task columns are on Orion. –: not run on the external cohorts.</p>
+  <p class="note">Accuracy (%). Task columns are on Orion. –: not run on the external cohorts.</p>
+  </details>
 
   <div class="narrow">
   <h3>Is the reasoning right?</h3>
   <p>For open-weight models, every intermediate quantity is checked against the cell-level truth (unstated counts as wrong). General and medical MLLMs state only 19–36% of the quantities that the scoring rules require, and pathology MLLMs under 10%; the strongest open-weight baseline (Gemma-4-31B) gets only 16.4% of them right. HERMES states every quantity and 66.2% are correct, with the largest gap on Ki67 source (64% vs. 6%).</p>
   </div>
+  <figure class="widget" id="iqw">
+    <div class="wh"><span class="wt">(b) Intermediate quantities correct, per model</span><div class="seg" id="iqt"></div></div>
+    <div class="bars" id="iqbars"></div>
+    <figcaption class="wcap" id="iqcap"></figcaption>
+  </figure>
+  <div class="wgrid">
+    <figure class="widget" id="abw"><div class="wh"><span class="wt">(a) GRPO with and without the process reward</span></div>
+      <svg class="chart" id="absvg" viewBox="0 0 320 210" role="img" aria-label="Answer accuracy and share of correct quantities for HERMES SFT, RL without process reward, and HERMES RL"></svg>
+      <div class="legend" id="ablg"></div></figure>
+    <figure class="widget" id="cvw" style="position:relative"><div class="wh"><span class="wt">(c) Correct reasoning goes with correct answers</span></div>
+      <svg class="chart" id="cvsvg" viewBox="0 0 320 218" role="img" aria-label="Answer accuracy by number of correct intermediate quantities, HERMES and Gemma-4-31B"></svg>
+      <div class="tipbox" id="cvtip"></div>
+      <div class="wcap" style="margin-top:4px">Answer accuracy (%); marker area: number of questions. Hover a point.</div></figure>
+  </div>
   <figure>
-    <img src="static/iq_bars.jpg" alt="Three panels: process-reward ablation, per-task share of correct quantities, and answer accuracy against number of correct quantities">
-    <figcaption><b>Intermediate quantities checked against cell-level truth.</b> (a) Without the process reward, GRPO raises accuracy only from 78.8% to 80.0%, and the correct share falls to 37.2%; on the two Ki67 tasks, 96–99% of its outputs leave the guideline steps and count all nuclei on the mIF Hoechst channel instead of the epithelial nuclei on H&amp;E. (b) Correct share per task and model. (c) Accuracy of HERMES rises from 45.2% with no correct quantity to 90.7% with all four correct.</figcaption>
+    <figcaption><b>Intermediate quantities checked against cell-level truth</b> (<a href="static/iq_bars.jpg" style="color:var(--accent-ink)">static figure</a>). (a) Without the process reward, GRPO raises accuracy only from 78.8% to 80.0%, and the correct share falls to 37.2%; on the two Ki67 tasks, 96–99% of its outputs leave the guideline steps and count all nuclei on the mIF Hoechst channel instead of the epithelial nuclei on H&amp;E. (b) Correct share per task and model. (c) Accuracy of HERMES rises from 45.2% with no correct quantity to 90.7% with all four correct.</figcaption>
   </figure>
   <div class="narrow">
   <div class="take"><b>Takeaway.</b> The process reward is what makes RL help: it lifts accuracy to 84.5% and keeps the stated quantities correct, and correct reasoning goes with correct answers.</div>
 
   <h3>Does the answer follow from the reasoning?</h3>
   <p>When we edit the decisive quantity in the reasoning (for example, tripling the CD8<sup>+</sup> count or swapping the two Ki67<sup>+</sup> counts) and let HERMES continue, the answer changes as the edit implies in all 885 test questions; without an edit, it is reproduced in all of them.</p>
+  <figure class="widget" id="edw">
+    <div class="wh"><span class="wt">Edit the count in HERMES’s reasoning (held-out Density field, patient CRC35)</span></div>
+    <div class="trace">
+      <div class="ln"><span class="n">1</span><span class="m"></span><span>The field is 112 × 112 µm ≈ 0.0125 mm².</span></div>
+      <div class="ln"><span class="n">2</span><span class="m he">H&amp;E</span><span>Stroma about 70% of the field, ≈ 0.0087 mm².</span></div>
+      <div class="ln"><span class="n">3</span><span class="m mif">mIF</span><span>60 red-only CD3⁺CD8⁻ cells excluded.</span></div>
+      <div class="ln"><span class="n">4</span><span class="m"></span><span><span class="ed" id="edn">38</span> yellow cells lie in the stroma.</span></div>
+      <div class="ln"><span class="n">5</span><span class="m"></span><span><span id="edn2">38</span> / 0.0087 mm²</span></div>
+      <div class="ln ans" id="edansln"><span></span><span></span><span>Answer: <span id="edans"></span></span></div>
+    </div>
+    <input type="range" class="slider" id="edx" min="0" max="114" value="38" aria-label="Edited CD8+ count">
+    <div class="kv"><span>edited count</span><span id="edk"></span></div>
+    <figcaption class="wcap">The answer the edited count implies. In the paper’s test, the decisive quantity was edited in the reasoning of all 885 test questions and HERMES continued from the edit: every answer changed as implied (truth for this field: 37 cells, 3,993 cells/mm²).</figcaption>
+  </figure>
   <p>Editing the <em>image</em> has the same effect. Removing three CD8<sup>+</sup> cells from the mIF image lowers the stated count in <b>89.7%</b> of fields (Gemma-4-31B 69.6%, Qwen3.8-27B 54.4%), while a sham edit away from T cells leaves it unchanged in <b>73.3%</b> (5.1% and 16.4%).</p>
+  <figure class="widget" id="cfw">
+    <div class="wh"><span class="wt">Edits to the mIF image (held-out Orion fields)</span></div>
+    <div class="wh"><div class="seg" id="cft"></div></div>
+    <div class="bars" id="cfbars"></div>
+    <figcaption class="wcap" id="cfcap"></figcaption>
+  </figure>
 
   <h3>Knowing when not to box</h3>
   <p>In Regions, the strongest baselines tend to draw boxes even when there is nothing to box, answering “none” in only 34–42% of fields without infiltrate. HERMES does so in 76.6% while still boxing 86.1% of fields with infiltrate, and its box-level F1 is 60.3 vs. 48.9 at IoU ≥ 0.1.</p>
+  <figure class="widget" id="boxw">
+    <div class="wh"><span class="wt">Box-level F1 on Regions (Orion)</span><div class="seg" id="boxt"></div></div>
+    <div class="bars" id="boxbars"></div>
+    <figcaption class="wcap">A predicted box matches a true region at the chosen IoU; a field can be boxed correctly with fewer or more boxes than the truth, hence the low threshold.</figcaption>
+  </figure>
   </div>
   <div class="two narrow" style="margin-top:18px">
     <div>
       <h3 style="margin-top:0">HERMES uses both images</h3>
       <p>Masking either image while keeping the other intact lowers accuracy on every task (validation set): the average falls from 86.7% to 76.4% without H&amp;E and to 50.0% without mIF. H&amp;E supplies the compartment and the denominator of the Ki67 index; mIF supplies the identity of each cell.</p>
     </div>
-    <figure><img src="static/modality_masking_acc.jpg" alt="Accuracy per task when 50% or 100% of the H&amp;E or mIF image is masked"><figcaption>Masking 50% or 100% of H&amp;E (a) or mIF (b).</figcaption></figure>
+    <figure class="widget" id="mkw" style="margin-top:0">
+      <div class="wh"><div class="seg" id="mkt"></div><span class="mono" id="mkr" style="font-size:12.5px;color:var(--fg-2)"></span></div>
+      <div class="bars" id="mkbars"></div>
+      <input type="range" class="slider" id="mkx" min="0" max="4" value="0" aria-label="Share of the image masked">
+      <div class="kv"><span id="mkl"></span><span>tick: both images</span></div>
+      <figcaption class="wcap">Validation set, 250 questions per task, HERMES (RL). <a href="static/modality_masking_acc.jpg">Static figure</a>.</figcaption>
+    </figure>
   </div>
 </div></section>
 
@@ -263,6 +412,257 @@ document.getElementById('copybtn').addEventListener('click',async e=>{
   catch(_){const r=document.createRange();r.selectNodeContents(document.getElementById('bib'));const s=getSelection();s.removeAllRanges();s.addRange(r);e.target.textContent='Selected'}
   setTimeout(()=>e.target.textContent='Copy',1500);
 });
+</script>
+<script>
+(function(){
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const $=s=>document.querySelector(s);
+const FAM={proprietary:'var(--c-prop)',general:'var(--c-gen)',medical:'var(--c-med)',pathology:'var(--c-path)'};
+const colorOf=(name,fam)=>name==='HERMES (RL)'||name==='HERMES'?'var(--c-ours)':name==='HERMES (SFT)'?'var(--c-ours2)':
+  /base/.test(name)?'var(--c-base)':/without process/.test(name)?'var(--c-base)':FAM[fam]||'var(--c-base)';
+const onView=(el,fn,th=.3)=>{if(!el)return;if(!('IntersectionObserver' in window)){fn();return}
+  const io=new IntersectionObserver(es=>{if(es[0].isIntersecting){io.disconnect();fn()}},{threshold:th});io.observe(el)};
+const fmt=(v,d=1)=>v==null?'–':(+v).toFixed(d);
+
+/* ---------- reveal on scroll + count-up ---------- */
+if('IntersectionObserver' in window&&!RM){
+  const tg=document.querySelectorAll('section h2,section h3,.widget,figure,.stat,.card,.task,.take,ol.steps li');
+  tg.forEach(e=>e.classList.add('reveal'));
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{rootMargin:'0px 0px -8% 0px'});
+  tg.forEach(e=>io.observe(e));
+  document.querySelectorAll('.stat .v').forEach(node=>{
+    const m=node.firstChild&&node.firstChild.nodeValue.match(/^(~?)([\d.]+)/);if(!m)return;
+    const pre=m[1],num=+m[2],dec=(m[2].split('.')[1]||'').length,txt=node.firstChild;
+    onView(node,()=>{const t0=performance.now(),D=1300;
+      (function f(){const k=Math.min(1,(performance.now()-t0)/D),v=num*(1-Math.pow(1-k,3));txt.nodeValue=pre+v.toFixed(dec);if(k<1)requestAnimationFrame(f)})()},.6);
+  });
+}
+
+/* ---------- generic animated bar list ---------- */
+function BarList(el,{max=100,unit='',rowH=30,dec=1}={}){
+  const rows={};
+  return function(items,{sort=true,ghost}={}){
+    const list=sort?[...items].sort((a,b)=>(b.v??-1e9)-(a.v??-1e9)):items;
+    Object.keys(rows).forEach(k=>{if(!list.find(i=>i.name===k)){rows[k].remove();delete rows[k]}});
+    list.forEach((it,i)=>{
+      let r=rows[it.name];
+      if(!r){r=document.createElement('div');r.className='brow';
+        r.innerHTML='<span class="bn"></span><span class="bt"><span class="bf" style="width:0"></span><span class="bg" hidden></span></span><span class="bv"></span>';
+        r.style.top=(i*rowH)+'px';el.appendChild(r);rows[it.name]=r}
+      r.classList.toggle('ours',/HERMES/.test(it.name));
+      r.querySelector('.bn').textContent=it.name;r.querySelector('.bn').title=it.name;
+      const f=r.querySelector('.bf'),w=Math.max(0,Math.min(100,100*(it.v??0)/max));
+      f.style.background=it.color;
+      requestAnimationFrame(()=>{f.style.width=w+'%';r.style.top=(i*rowH)+'px'});
+      const g=r.querySelector('.bg');
+      if(ghost&&ghost[it.name]!=null){g.hidden=false;g.style.left=Math.min(100,100*ghost[it.name]/max)+'%'}else g.hidden=true;
+      r.querySelector('.bv').textContent=it.v==null?'–':fmt(it.v,dec)+unit;
+    });
+    el.style.height=(list.length*rowH)+'px';
+  };
+}
+function seg(el,opts,cur,cb){
+  el.innerHTML='';opts.forEach(([k,l])=>{const b=document.createElement('button');b.type='button';b.textContent=l;b.dataset.k=k;
+    b.setAttribute('aria-pressed',k===cur);b.onclick=()=>{el.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b));cb(k)};el.appendChild(b)});
+}
+
+fetch('static/site_data.json').then(r=>r.json()).then(D=>{
+  /* ---------- results explorer ---------- */
+  (function(){
+    const bars=BarList($('#resbars'));let coh='orion',met='avg';
+    const MET={avg:'Average accuracy',density:'Density',regions:'Regions',source:'Ki67 source',fraction:'Ki67 fraction',
+      k_ki67:'Ki67 grade κ',k_iecd8:'Intra-epi. CD8 κ',k_scd8:'Stromal CD8 κ'};
+    const CAP={orion:'<b>Held-out Orion patients</b> (colorectal cancer), 250 questions per task. Accuracy (%) or clinical-grade agreement (quadratic weighted κ × 100).',
+      schurch:'<b>Schürch cohort</b>: colorectal cancer imaged with CODEX, 874 questions, no retraining. GPT-5.6 Sol and Claude Opus 5 were run on Orion only.',
+      hnscc:'<b>Head and neck squamous cell carcinoma</b>, a cancer type absent from training, 1,000 questions, no retraining. Average accuracy (%).'};
+    const val=m=>coh==='orion'?m.orion[met]:coh==='schurch'?(m.schurch&&m.schurch[met]):m.hnscc;
+    function draw(){
+      const items=D.models.map(m=>({name:m.name,v:val(m),color:colorOf(m.name,m.family)})).filter(i=>i.v!=null);
+      bars(items);$('#rescap').innerHTML=CAP[coh];
+    }
+    function metrics(){const ks=coh==='hnscc'?['avg']:Object.keys(MET);if(!ks.includes(met))met='avg';
+      seg($('#resm'),ks.map(k=>[k,MET[k]]),met,k=>{met=k;draw()})}
+    seg($('#resc'),[['orion','Orion (held-out)'],['schurch','Schürch · CODEX'],['hnscc','HNSCC']],coh,k=>{coh=k;metrics();draw()});
+    metrics();onView($('#resw'),draw,.15);
+  })();
+
+  /* ---------- (b) intermediate quantities per task ---------- */
+  (function(){
+    const bars=BarList($('#iqbars'));let t='overall';
+    const T=[['overall','All tasks'],['density','Density'],['fraction','Ki67 fraction'],['regions','Regions'],['source','Ki67 source']];
+    function draw(){bars(D.iq.map(m=>({name:m.name,v:m[t],color:colorOf(m.name,m.family)})),
+      {ghost:t==='overall'?Object.fromEntries(D.iq.map(m=>[m.name,m.stated])):null});
+      $('#iqcap').innerHTML=t==='overall'?'Bar: share of the four required quantities stated <b>correctly</b>; tick: share stated at all. Unstated counts as wrong.':
+        'Share of the four quantities this task needs that match the cell-level truth (unstated counts as wrong).'}
+    seg($('#iqt'),T,t,k=>{t=k;draw()});onView($('#iqw'),draw,.2);
+  })();
+
+  /* ---------- (a) process-reward ablation ---------- */
+  (function(){
+    const svg=$('#absvg'),W=320,H=210,L=34,B=180,top=18,max=100,g=[['acc','Answer accuracy'],['iq','Quantities correct']];
+    const bw=26,gap=6,gw=3*bw+2*gap;let h='';
+    for(let y=0;y<=100;y+=20){const yy=B-(B-top)*y/max;h+=`<line class="grid" x1="${L}" x2="${W}" y1="${yy}" y2="${yy}"/><text x="${L-6}" y="${yy+4}" text-anchor="end">${y}</text>`}
+    g.forEach(([k,lab],gi)=>{const x0=L+22+gi*(gw+50);
+      D.ablation.forEach((m,i)=>{const x=x0+i*(bw+gap),v=m[k],hh=(B-top)*v/max;
+        h+=`<rect class="abr" x="${x}" width="${bw}" y="${B}" height="0" data-y="${B-hh}" data-h="${hh}" rx="3" fill="${colorOf(m.name)}"><title>${m.name}: ${v}%</title></rect>
+            <text class="abv" x="${x+bw/2}" y="${B-hh-5}" text-anchor="middle" style="opacity:0;font-size:11px">${fmt(v)}</text>`});
+      h+=`<text x="${x0+gw/2}" y="${B+18}" text-anchor="middle">${lab}</text>`});
+    h+=`<line class="ax" x1="${L}" x2="${W}" y1="${B}" y2="${B}"/>`;svg.innerHTML=h;
+    $('#ablg').innerHTML=D.ablation.map(m=>`<span><i style="background:${colorOf(m.name)}"></i>${m.name}</span>`).join('');
+    const go=()=>svg.querySelectorAll('.abr').forEach((r,i)=>{const s=()=>{r.setAttribute('y',r.dataset.y);r.setAttribute('height',r.dataset.h);
+      r.nextElementSibling.style.opacity=1};if(RM)s();else{r.style.transition='y .9s cubic-bezier(.2,.7,.2,1),height .9s cubic-bezier(.2,.7,.2,1)';setTimeout(s,i*120)}});
+    onView(svg,go,.4);
+  })();
+
+  /* ---------- (c) accuracy by number of correct quantities ---------- */
+  (function(){
+    const svg=$('#cvsvg'),W=320,H=210,L=34,R=310,B=180,top=14,tip=$('#cvtip');
+    const x=k=>L+12+(R-L-24)*k/4,y=v=>B-(B-top)*v/100;let h='';
+    for(let v=0;v<=100;v+=20)h+=`<line class="grid" x1="${L}" x2="${R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L-6}" y="${y(v)+4}" text-anchor="end">${v}</text>`;
+    for(let k=0;k<=4;k++)h+=`<text x="${x(k)}" y="${B+16}" text-anchor="middle">${k}</text>`;
+    h+=`<text x="${(L+R)/2}" y="${B+32}" text-anchor="middle">quantities correct (of 4)</text><line class="ax" x1="${L}" x2="${R}" y1="${B}" y2="${B}"/>`;
+    const S=[['HERMES (RL)','var(--c-ours)'],['Gemma-4-31B','var(--c-gen)']];
+    S.forEach(([n,c])=>{const pts=D.curve[n].filter(p=>p.acc!=null);
+      const d=pts.map((p,i)=>(i?'L':'M')+x(p.k)+' '+y(p.acc)).join(' ');
+      h+=`<path class="cvl" d="${d}" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"/>`;
+      pts.forEach(p=>{const r=3+7*Math.sqrt(p.n/1000);h+=`<circle class="cvp" cx="${x(p.k)}" cy="${y(p.acc)}" r="${r}" fill="${c}" stroke="var(--bg)" stroke-width="1.5" style="opacity:0" data-t="${n}: ${p.acc}% of ${p.n} questions with ${p.k}/4 correct"/>`});
+      const lp=n.startsWith('H')?pts[pts.length-1]:pts[1];h+=n.startsWith('H')?`<text x="${x(lp.k)-4}" y="${y(lp.acc)-12}" text-anchor="end" style="fill:${c};font-weight:600">HERMES</text>`:`<text x="${x(lp.k)+6}" y="${y(lp.acc)+22}" text-anchor="start" style="fill:${c};font-weight:600">${n}</text>`});
+    svg.innerHTML=h;
+    svg.querySelectorAll('.cvp').forEach(c=>{c.addEventListener('mouseenter',()=>{const b=svg.getBoundingClientRect(),s=b.width/W;
+      tip.textContent=c.dataset.t;tip.style.left=(c.cx.baseVal.value*s)+'px';tip.style.top=(c.cy.baseVal.value*s)+'px';tip.style.opacity=1});
+      c.addEventListener('mouseleave',()=>tip.style.opacity=0)});
+    const go=()=>{svg.querySelectorAll('.cvl').forEach(p=>{const L=p.getTotalLength();p.style.strokeDasharray=L;p.style.strokeDashoffset=RM?0:L;
+      if(!RM){p.getBoundingClientRect();p.style.transition='stroke-dashoffset 1.6s ease';p.style.strokeDashoffset=0}});
+      svg.querySelectorAll('.cvp').forEach((c,i)=>setTimeout(()=>{c.style.transition='opacity .4s';c.style.opacity=1},RM?0:300+i*150))};
+    onView(svg,go,.4);
+  })();
+
+  /* ---------- image counterfactuals ---------- */
+  (function(){
+    const bars=BarList($('#cfbars'),{rowH:32});const rows=D.cf.rows.filter(r=>!/Readable/.test(r.name));
+    const lab=n=>n.replace(/``none''/,'“none”');let cur=1;
+    const EXP={'Delete 1: change correct':'One CD8⁺ T cell removed from the mIF image: the stated count changes in the right direction.',
+      'Delete 3: count drops':'Three CD8⁺ T cells removed: the stated count goes down.',
+      'Delete 3: change correct':'Three removed: the stated count drops by the right amount (within tolerance).',
+      'Delete all: count drops':'All CD8⁺ T cells of the asked compartment removed: the stated count goes down.',
+      'Sham: unchanged':'The same edit at three points with no T cell nearby: count and answer should stay the same.',
+      'Sham: count drops':'Sham edit, yet the stated count drops (lower is better).',
+      "Delete all: answer ``none''":'Regions: every intra-epithelial CD8⁺ cell removed, so the answer should become “none”.',
+      'Sham: infiltrate still reported':'Regions after a sham edit: the infiltrate should still be reported.'};
+    function draw(){const r=rows[cur];bars(D.cf.cols.map((n,i)=>({name:n==='HERMES'?'HERMES (RL)':n,v:r.vals[i],
+      color:n==='HERMES'?'var(--c-ours)':'var(--c-gen)'})),{sort:false});$('#cfcap').innerHTML='<b>'+lab(r.name)+'.</b> '+EXP[r.name]+' Share of fields (%).'}
+    seg($('#cft'),rows.map((r,i)=>[String(i),lab(r.name)]),String(cur),k=>{cur=+k;draw()});onView($('#cfw'),draw,.2);
+  })();
+
+  /* ---------- Regions box F1 ---------- */
+  (function(){
+    const bars=BarList($('#boxbars'));let k='iou01';
+    function draw(){bars(D.box.map(m=>({name:m.name,v:m[k],color:colorOf(m.name,m.family)})))}
+    seg($('#boxt'),[['iou01','IoU ≥ 0.1'],['iou03','IoU ≥ 0.3']],k,x=>{k=x;draw()});onView($('#boxw'),draw,.15);
+  })();
+
+  /* ---------- modality masking ---------- */
+  (function(){
+    const bars=BarList($('#mkbars'),{rowH:32});let mod='mif',i=0;const P=[0,10,25,50,100];
+    const T=[['density','Density'],['regions','Regions'],['source','Ki67 source'],['fraction','Ki67 fraction'],['avg','Average']];
+    const sl=$('#mkx');
+    function draw(){const row=D.mask[mod][i],clean=D.mask[mod][0];
+      bars(T.map(([k,l])=>({name:l,v:row[k],color:mod==='he'?'#b0457f':'#c73a2c'})),{sort:false,ghost:Object.fromEntries(T.map(([k,l])=>[l,clean[k]]))});
+      $('#mkl').textContent=(mod==='he'?'H&E':'mIF')+' masked: '+P[i]+'%'+(P[i]===100?' (image removed)':'');
+      $('#mkr').textContent='average '+fmt(row.avg)+'% (both images: '+fmt(clean.avg)+'%)'}
+    seg($('#mkt'),[['mif','Mask mIF'],['he','Mask H&E']],mod,k=>{mod=k;draw()});
+    sl.addEventListener('input',()=>{i=+sl.value;draw()});
+    onView($('#mkw'),()=>{draw();if(RM)return;let j=0;const tm=setInterval(()=>{j++;if(j>4){clearInterval(tm);return}i=j;sl.value=j;draw()},900)},.3);
+  })();
+}).catch(()=>{document.querySelectorAll('.widget .bars').forEach(b=>b.textContent='Interactive figure unavailable; see the table below.')});
+
+/* ---------- process reward toy ---------- */
+(function(){
+  const svg=$('#rwsvg');if(!svg)return;const W=640,H=200,L=40,R=625,B=170,top=14;
+  const Q={count:{q:103,max:206,label:'stated epithelial nuclei',tau:[q=>Math.max(5,q),q=>Math.max(3,.5*q),q=>Math.max(2,.3*q)],unit:''},
+           area:{q:63,max:100,label:'stated epithelium share (%)',tau:[()=>30,()=>30,()=>30],unit:'%'}};
+  let qk='count',st=0;const sl=$('#rwx');
+  const r=(v,q,w)=>Math.max(0,1-Math.abs(v-q)/w);
+  function draw(){const o=Q[qk],x=v=>L+(R-L)*v/o.max,y=v=>B-(B-top)*v;let h='';
+    for(let k=0;k<=4;k++){const yy=y(k/4);h+=`<line class="grid" x1="${L}" x2="${R}" y1="${yy}" y2="${yy}"/><text x="${L-6}" y="${yy+4}" text-anchor="end">${(k/4).toFixed(2)}</text>`}
+    for(let k=0;k<=4;k++){const v=Math.round(o.max*k/4);h+=`<text x="${x(v)}" y="${B+16}" text-anchor="middle">${v}${o.unit}</text>`}
+    h+=`<line class="ax" x1="${L}" x2="${R}" y1="${B}" y2="${B}"/><line x1="${x(o.q)}" x2="${x(o.q)}" y1="${top}" y2="${B}" stroke="var(--ok)" stroke-dasharray="3 3"/>
+        <text x="${x(o.q)+5}" y="${top+10}" style="fill:var(--ok)">truth ${o.q}${o.unit}</text>`;
+    o.tau.forEach((f,i)=>{const w=f(o.q);const pts=[[o.q-w,0],[o.q,1],[o.q+w,0]].map(([a,b])=>[Math.max(0,Math.min(o.max,a)),b]);
+      const d=`M${x(0)} ${y(0)} L${x(Math.max(0,o.q-w))} ${y(0)} L${x(o.q)} ${y(1)} L${x(Math.min(o.max,o.q+w))} ${y(0)} L${x(o.max)} ${y(0)}`;
+      const on=qk==='area'?i===0:i===st;
+      h+=`<path d="${d}" fill="${on?'var(--accent-soft)':'none'}" fill-opacity="${on?.7:0}" stroke="${on?'var(--accent)':'var(--c-base)'}" stroke-width="${on?2.4:1.2}" ${on?'':'stroke-dasharray="4 3"'}/>`});
+    const v=+sl.value,w=o.tau[qk==='area'?0:st](o.q),rv=r(v,o.q,w);
+    h+=`<circle cx="${x(v)}" cy="${y(rv)}" r="7" fill="var(--accent)" stroke="var(--bg)" stroke-width="2"/>`;
+    svg.innerHTML=h;
+    $('#rwr').textContent='reward term = '+rv.toFixed(2);
+    $('#rwl').textContent=o.label+': '+v+o.unit;
+    $('#rwtau').textContent=qk==='area'?'w = 30 pp (all stages)':'τ = '+['max(5, q)','max(3, 0.5q)','max(2, 0.3q)'][st]+' = '+(+w.toFixed(1));
+  }
+  seg($('#rwq'),[['count','Epithelial nuclei (truth 103)'],['area','Epithelium (truth 63%)']],qk,k=>{qk=k;sl.max=Q[k].max;sl.value=k==='count'?98:58;
+    $('#rws').style.visibility=k==='area'?'hidden':'visible';draw()});
+  seg($('#rws'),[['0','Stage 1'],['1','Stage 2'],['2','Stage 3']],'0',k=>{st=+k;draw()});
+  sl.addEventListener('input',draw);draw();
+  onView(svg,()=>{if(RM)return;let k=0;const b=$('#rws').querySelectorAll('button');const tm=setInterval(()=>{k++;if(k>2){clearInterval(tm);return}b[k].click()},1400)},.5);
+})();
+
+/* ---------- edit the reasoning (text counterfactual) ---------- */
+(function(){
+  const sl=$('#edx');if(!sl)return;/* HERMES's own stroma area (0.0087 mm2 unrounded, so that 38 cells give its 4,365 cells/mm2) */ const A=38/4365,orig=38;let last=null;
+  function draw(){const n=+sl.value,ans=Math.round(n/A);
+    $('#edn').textContent=n;$('#edn2').textContent=n;$('#edans').textContent=ans.toLocaleString('en-US')+' cells/mm²';
+    $('#edk').textContent=n===orig?'unedited (HERMES’s own count)':(n/orig).toFixed(2)+'× the original count';
+    if(last!==null&&last!==n&&!RM){const a=$('#edansln');a.classList.remove('flash');void a.offsetWidth;a.classList.add('flash')}last=n}
+  sl.addEventListener('input',draw);draw();
+})();
+
+/* ---------- hero monitor: HERMES reasoning, step by step ---------- */
+(function(){
+  const box=$('#mon');if(!box)return;const he=$('#monhe').getContext('2d'),mi=$('#monmif').getContext('2d');
+  const IDS=['test-v3density-001074','test-v3fraction-005506','test-v3regions-002356','test-v3source-004103'];
+  const RC={cd8_in:'#ffe23b',cd8_out:'#3be8ff',red:'#ffffff',ki_epi:'#ffe23b',ki_out:'#3be8ff'};
+  let F=[],fi=0,si=-1,img={},t0=0,running=false,timer=null;
+  const load=src=>new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src});
+  fetch('static/viewer/data.json').then(r=>r.json()).then(async d=>{
+    F=IDS.map(id=>d.fields.find(f=>f.id===id)).filter(Boolean);
+    const P=F.map(f=>Promise.all([load('static/viewer/'+f.key+'_he.jpg'),load('static/viewer/'+f.key+'_mif.jpg'),load(f.mask)])
+      .then(([h,m,k])=>{img[f.id]={he:h,mif:m,mask:k}}));
+    await P[0];show(0);await Promise.all(P);
+    if(RM){si=F[0].hermes.steps.length-1;render(1);return}
+    const io=new IntersectionObserver(es=>{running=es[0].isIntersecting;if(running&&!timer)tick()},{threshold:.2});io.observe(box);
+  });
+  function layers(f){const s=new Set();f.hermes.steps.slice(0,si+1).forEach(x=>x.layers.forEach(l=>s.add(l)));return s}
+  function render(p){const f=F[fi],I=img[f.id],ly=layers(f),S=420,sc=S/1000;
+    [[he,I.he],[mi,I.mif]].forEach(([c,im])=>{c.clearRect(0,0,S,S);if(im)c.drawImage(im,0,0,S,S);
+      if(ly.has('mask')&&I.mask&&c===he){c.globalAlpha=Math.min(1,p*1.5);c.drawImage(I.mask,0,0,S,S);c.globalAlpha=1}
+      const cells=[];
+      ['red','cd8_out','cd8_in','ki_out','ki_epi'].forEach(k=>{const on=ly.has(k)||(ly.has('ki_all')&&k.startsWith('ki_'));if(on&&f.cells[k])f.cells[k].forEach(q=>cells.push([k,q]))});
+      cells.forEach(([k,q],j)=>{const a=Math.max(0,Math.min(1,p*cells.length/6-j/6+1));if(a<=0)return;
+        c.globalAlpha=a;c.strokeStyle=RC[k];c.lineWidth=k==='red'?2:2.6;c.setLineDash(k==='red'?[4,3]:[]);
+        c.beginPath();c.arc(q[0]*sc,q[1]*sc,9+4*(1-a),0,7);c.stroke();c.setLineDash([]);c.globalAlpha=1});
+      if(ly.has('boxes'))(f.truth.boxes||[]).forEach(b=>{c.strokeStyle='#4ee38a';c.lineWidth=2.4;c.globalAlpha=Math.min(1,p*1.5);
+        c.strokeRect(b[0]*sc,b[1]*sc,(b[2]-b[0])*sc,(b[3]-b[1])*sc);c.globalAlpha=1});
+    });
+    $('#monsteps').querySelectorAll('.st').forEach((e,j)=>e.classList.toggle('on',j<=si));
+  }
+  function show(i){fi=i;si=-1;const f=F[fi];
+    $('#monq').innerHTML='<b>'+f.title+'</b> · '+f.question.replace(/</g,'&lt;');
+    const q=Object.fromEntries(f.qty.map(x=>[x.k,x]));
+    $('#monsteps').innerHTML=f.hermes.steps.map(s=>{const m=s.mod==='H&E'?'he':s.mod==='mIF'?'mif':'';
+      const ks=s.keys.filter(k=>q[k]&&q[k].hermes!=null).slice(0,1).map(k=>`<span class="chip">truth ${q[k].truth}${q[k].unit}${q[k].hermes_ok?' ✓':''}</span>`).join('');
+      const txt=s.text.length>92?s.text.slice(0,90).replace(/\s\S*$/,'')+' …':s.text;
+      return `<div class="st"><span class="mtag ${m}">${s.mod||'·'}</span> ${txt.replace(/</g,'&lt;')}${ks}</div>`}).join('')+
+      `<div class="st" style="margin-top:4px">Answer <b>${f.hermes.answer}</b> <span class="chip">truth ${f.truth.answer}</span></div>`;
+    $('#monlink').href='viewer.html?task='+f.task+'&field='+encodeURIComponent(f.id);
+    $('#monst').innerHTML='<span class="dot"></span>'+(fi+1)+'/'+F.length+' · '+f.title+' · held-out patient '+f.patient;
+    render(0)}
+  function tick(){timer=null;if(!running)return;const f=F[fi],n=f.hermes.steps.length;
+    if(si<n){si++;const st=performance.now(),D=1100;(function a(){const p=Math.min(1,(performance.now()-st)/D);render(p);if(p<1)requestAnimationFrame(a)})();
+      if(si===n){$('#monsteps').querySelectorAll('.st').forEach(e=>e.classList.add('on'))}
+      timer=setTimeout(tick,si===n?3200:1900)}
+    else{show((fi+1)%F.length);timer=setTimeout(tick,700)}}
+})();
+})();
 </script>
 </body>
 </html>
