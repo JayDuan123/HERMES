@@ -122,28 +122,28 @@ footer a{color:var(--muted)}
 
 <section class="abstract"><div class="narrow">
   <h2>Abstract</h2>
-  <p>Readouts of the tumor immune microenvironment (TIME), such as CD8<sup>+</sup> T-cell density, intra-epithelial infiltration and the Ki67 index, combine tissue architecture from H&amp;E with cell phenotypes from multiplex immunofluorescence (mIF). Multimodal large language models (MLLMs) could automate these readouts with an explanation, but two gaps remain. First, pathology MLLMs, including R1-style ones trained with reinforcement learning, have not learned to read mIF together with H&amp;E. Second, R1-style rewards check only the final answer, so the reasoning is neither required to follow clinical guidelines nor verified.</p>
+  <p>Readouts of the tumor immune microenvironment (TIME), such as CD8<sup>+</sup> T-cell density, intra-epithelial infiltration and the Ki67 index, combine tissue architecture from H&amp;E with cell phenotypes from multiplex immunofluorescence (mIF). Multimodal large language models (MLLMs) could automate these readouts with an explanation, but two gaps remain. Pathology MLLMs read H&amp;E alone, while these readouts need the cell phenotypes that mIF measures. And their reasoning has no step-level truth to be checked against, so R1-style reinforcement learning rewards only the final answer and leaves the reasoning unverified.</p>
   <p>Same-section H&amp;E and mIF provide what both gaps lack: mIF measures every cell without manual annotation, which gives cell-level ground truth for each step that clinical guidelines prescribe, from delineating a tissue compartment to counting and normalising the marker-positive cells within it. We therefore present <b>HERMES</b> (<b>H</b>&amp;<b>E</b>–mIF <b>R</b>easoning with <b>M</b>ultimodal <b>E</b>vidence <b>S</b>upervision), an R1-style MLLM that reasons jointly over paired H&amp;E and mIF in guideline steps, each naming the modality it reads, and is trained with a process reward that checks every stated quantity against this truth.</p>
-  <p>Across four field-level TIME tasks in colorectal cancer, the 4B-parameter HERMES reaches an average accuracy of 84.5%, compared with 74.7% for the strongest of twelve proprietary, general, medical and pathology MLLMs, and a higher share of its intermediate quantities is correct than for the strongest open-weight baseline. Without retraining, it keeps the highest average accuracy on an external cohort imaged with CODEX (76.4% vs. 67.3%) and on head and neck cancer, a cancer type absent from training (76.7% vs. 72.5%).</p>
+  <p>Across four field-level TIME tasks in colorectal cancer, the 4B-parameter HERMES reaches an average accuracy of 84.5%, compared with 74.7% for the strongest of twelve proprietary, general, medical and pathology MLLMs, and a higher share of its intermediate quantities is correct than for the strongest open-weight baseline. The process reward is what makes the stated reasoning correct: without it, reinforcement learning barely improves on supervised fine-tuning (80.0% vs. 78.8%) and fewer stated quantities are correct, and the answers follow from the stated quantities, changing as implied in all 885 test questions when a decisive quantity is edited. Without retraining, it keeps the highest average accuracy on an external cohort imaged with CODEX (76.4% vs. 67.3%) and on head and neck cancer, a cancer type absent from training (76.7% vs. 72.5%).</p>
 </div></section>
 
 <section><div class="narrow">
   <h2>Why H&amp;E and mIF, and why the reasoning</h2>
-  <p>Clinical TIME readouts are counts of specific cells in specific compartments: the Immunoscore uses CD3<sup>+</sup>/CD8<sup>+</sup> densities in the tumor and at its margin, TILs are scored as a share of stroma, and the Ki67 index counts only <em>tumor</em> nuclei. Location matters as much as number: the same CD8<sup>+</sup> count means an inflamed tumor when the cells enter the epithelium, and an immune-excluded one when they stay in the stroma.</p>
+  <p>Clinical TIME readouts quantify specific cells in specific compartments: the Immunoscore uses CD3<sup>+</sup>/CD8<sup>+</sup> densities in the tumor and at its margin, TILs are scored as a share of stroma, and the Ki67 index counts only <em>tumor</em> nuclei. Location matters as much as number: the same CD8<sup>+</sup> count means an inflamed tumor when the cells enter the epithelium, and an immune-excluded one when they stay in the stroma.</p>
   <div class="cards">
     <div class="card"><h4>H&amp;E alone is not enough</h4><p>It shows where epithelium ends and stroma begins, but cannot tell a CD8<sup>+</sup> T cell from other lymphocytes.</p></div>
     <div class="card"><h4>mIF alone is not enough</h4><p>It gives the protein identity of each cell, but without an epithelial marker cannot tell a tumor nucleus from a stromal one.</p></div>
     <div class="card"><h4>MLLMs do not read mIF</h4><p>General, medical and pathology MLLMs are trained on H&amp;E or natural images, never on mIF together with H&amp;E.</p></div>
-    <div class="card"><h4>R1-style rewards ignore the reasoning</h4><p>Only the final answer is rewarded. The strongest open-weight baseline states about a third of the needed quantities, and 16% of them are correct.</p></div>
+    <div class="card"><h4>R1-style rewards ignore the reasoning</h4><p>Only the final answer is rewarded. The strongest open-weight baseline states about a third of the needed quantities, and only 16% of the required quantities are correct.</p></div>
   </div>
-  <div class="take"><b>Key idea.</b> On a same-section H&amp;E + mIF image, every cell is measured in both modalities, so cell tables and a Pan-CK epithelial mask give the exact value of every quantity a pathologist would state on the way to an answer. That turns the reasoning itself into a target that can be rewarded and verified.</div>
+  <div class="take"><b>Key idea.</b> On a same-section H&amp;E + mIF image, every cell is measured in both modalities, so cell tables and a Pan-CK epithelial mask give a measured value for every quantity a pathologist would state on the way to an answer. That turns the reasoning itself into a target that can be rewarded and verified.</div>
 </div></section>
 
 <section><div class="wrap">
   <h2>How HERMES works</h2>
   <figure>
     <img src="static/pipeline.jpg" alt="HERMES overview: paired H&amp;E and mIF field, guideline-structured reasoning, SFT then GRPO with format, answer and process rewards, and four evaluation tasks">
-    <figcaption><b>Overview.</b> (1) A same-section H&amp;E and mIF field. (2) Guideline-structured reasoning: compartment and nuclei on H&amp;E, marker-positive cells on mIF, then the readout. (3) Training traces are built from the cell-level ground truth (cell table, Pan-CK mask), which the model never sees. Stage 1: SFT of Qwen3.5-4B with LoRA; stage 2: GRPO with format, answer and process rewards.</figcaption>
+    <figcaption><b>Overview.</b> (1) A same-section H&amp;E and mIF field. (2) Guideline-structured reasoning: compartment and nuclei on H&amp;E, marker-positive cells on mIF, then the readout. (3) Training traces are built from the cell-level ground truth (cell table, epithelial Pan-CK mask), which the model never sees. Stage 1: SFT of Qwen3.5-4B with LoRA; stage 2: GRPO with format, answer and process rewards, the last checking each stated quantity against the truth (✓: within tolerance). Bottom: four tasks, evaluated on Orion and two external cohorts against proprietary and open-weight MLLMs.</figcaption>
   </figure>
   <div class="narrow">
   <ol class="steps">
@@ -205,11 +205,11 @@ footer a{color:var(--muted)}
 
   <div class="narrow">
   <h3>Is the reasoning right?</h3>
-  <p>For open-weight models, every intermediate quantity is checked against the cell-level truth (unstated counts as wrong). General and medical MLLMs state only 19–36% of the quantities a task needs, and pathology MLLMs under 10%. HERMES states every quantity and 66.2% are correct.</p>
+  <p>For open-weight models, every intermediate quantity is checked against the cell-level truth (unstated counts as wrong). General and medical MLLMs state only 19–36% of the quantities that the scoring rules require, and pathology MLLMs under 10%; the strongest open-weight baseline (Gemma-4-31B) gets only 16.4% of them right. HERMES states every quantity and 66.2% are correct, with the largest gap on Ki67 source (64% vs. 6%).</p>
   </div>
   <figure>
     <img src="static/iq_bars.jpg" alt="Three panels: process-reward ablation, per-task share of correct quantities, and answer accuracy against number of correct quantities">
-    <figcaption><b>Intermediate quantities checked against cell-level truth.</b> (a) Without the process reward, GRPO raises accuracy only from 78.8% to 80.0%, and the correct share falls to 37.2%. (b) Correct share per task and model. (c) Accuracy of HERMES rises from 45.2% with no correct quantity to 90.7% with all four correct.</figcaption>
+    <figcaption><b>Intermediate quantities checked against cell-level truth.</b> (a) Without the process reward, GRPO raises accuracy only from 78.8% to 80.0%, and the correct share falls to 37.2%; on the two Ki67 tasks, 96–99% of its outputs leave the guideline steps and count all nuclei on the mIF Hoechst channel instead of the epithelial nuclei on H&amp;E. (b) Correct share per task and model. (c) Accuracy of HERMES rises from 45.2% with no correct quantity to 90.7% with all four correct.</figcaption>
   </figure>
   <div class="narrow">
   <div class="take"><b>Takeaway.</b> The process reward is what makes RL help: it lifts accuracy to 84.5% and keeps the stated quantities correct, and correct reasoning goes with correct answers.</div>
@@ -224,7 +224,7 @@ footer a{color:var(--muted)}
   <div class="two narrow" style="margin-top:18px">
     <div>
       <h3 style="margin-top:0">HERMES uses both images</h3>
-      <p>Masking either image while keeping the other intact lowers accuracy on every task: the average falls from 86.7% to 76.4% without H&amp;E and to 50.0% without mIF. H&amp;E supplies the compartment and the denominator of the Ki67 index; mIF supplies the identity of each cell.</p>
+      <p>Masking either image while keeping the other intact lowers accuracy on every task (validation set): the average falls from 86.7% to 76.4% without H&amp;E and to 50.0% without mIF. H&amp;E supplies the compartment and the denominator of the Ki67 index; mIF supplies the identity of each cell.</p>
     </div>
     <figure><img src="static/modality_masking_acc.jpg" alt="Accuracy per task when 50% or 100% of the H&amp;E or mIF image is masked"><figcaption>Masking 50% or 100% of H&amp;E (a) or mIF (b).</figcaption></figure>
   </div>
@@ -233,10 +233,11 @@ footer a{color:var(--muted)}
 <section><div class="narrow">
   <h2>Contributions</h2>
   <ol class="steps">
-    <li>The first reasoning benchmark on same-section H&amp;E and mIF, with four tasks tied to clinical readouts, cell-level truth for every intermediate quantity, and external cohorts from a different imaging platform and a different cancer type.</li>
-    <li>HERMES, an MLLM trained with reinforcement learning for TIME interpretation from paired H&amp;E and mIF, which reasons in guideline-structured steps and is trained with a process reward that verifies every stated quantity.</li>
-    <li>Higher answer accuracy and clinical-grade agreement than twelve MLLMs, and the highest accuracy without retraining on a CODEX cohort and on head and neck cancer, with about 190 output tokens per answer.</li>
-    <li>A multi-level verification of the reasoning: stated quantities against cell-level truth, accuracy against their correctness, and edits to the text and to the image.</li>
+    <li><b>Guideline-structured reasoning for TIME readouts.</b> Three scoring rules of clinical practice (the compartment area as the denominator, CD8<sup>+</sup> cells as a density, and the Ki67 index over tumor nuclei only) become a fixed sequence of steps, each reading one modality and stating one quantity, so that a pathologist can audit every step and same-section H&amp;E and mIF give every step a measurable truth.</li>
+    <li><b>HERMES</b>, an MLLM trained with reinforcement learning for TIME interpretation from paired H&amp;E and mIF, which learns this structure from traces filled with the cell-level truth and is trained with a process reward that verifies every stated quantity.</li>
+    <li><b>The first reasoning benchmark on same-section H&amp;E and mIF</b>, with four tasks tied to clinical readouts, cell-level truth for every intermediate quantity, and external cohorts from a different imaging platform and a different cancer type.</li>
+    <li><b>Experiments</b> showing higher answer accuracy and clinical-grade agreement than twelve MLLMs and the highest accuracy without retraining on a CODEX cohort (76.4% vs. 67.3%) and on head and neck cancer, with about 190 output tokens against 1.2k–6.5k for the strongest open-weight baselines.</li>
+    <li><b>A multi-level verification of the reasoning</b>: each stated quantity is checked against the cell-level truth, answer accuracy rises with their correctness, editing a stated quantity changes the answer as implied, and removing CD8<sup>+</sup> cells from the mIF image lowers the stated count.</li>
   </ol>
 </div></section>
 
